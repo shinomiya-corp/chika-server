@@ -4,8 +4,8 @@ module.exports = {
       name: 'chika-server',
       script: './dist/main.js',
       instances: 'max',
+      exec_mode: 'cluster',
       env_production: {
-        exec_mode: 'cluster',
         NODE_ENV: 'production',
       },
     },
