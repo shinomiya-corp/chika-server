@@ -15,6 +15,7 @@ export class DiscordStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(accessToken: string, refreshToken: string, profile: Profile) {
+    console.trace('inside DiscordStrategy#validate');
     const { username, discriminator, avatar, id: discordId } = profile;
     return this.authService.validateUser({
       username,
