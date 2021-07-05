@@ -33,6 +33,7 @@ type Mutation {
 
 type Query {
   getAllCommands: [Command!]!
+  getDisabledCommands(guildId: String!): [Command!]!
 }
 
 input ToggleCommandInput {

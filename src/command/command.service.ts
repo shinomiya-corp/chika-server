@@ -10,6 +10,14 @@ export class CommandService {
     return this.prisma.command.findMany({ include: { args: true } });
   }
 
+  async findDisabled(guildId: string) {
+    const res = await this.prisma.guild.findUnique({
+      where: { guildId },
+      select: { disabledCommands: { include: { args: true } } },
+    });
+    return res.disabledCommands;
+  }
+
   async enable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandId } = toggleCommandInput;
     return this.prisma.command.update({

@@ -16,6 +16,14 @@ export class CommandResolver {
     return this.commandService.findAll();
   }
 
+  @Query(() => [Command])
+  @UseGuards(GqlAuthGuard)
+  getDisabledCommands(
+    @Args('guildId', { type: () => String }) guildId: string,
+  ) {
+    return this.commandService.findDisabled(guildId);
+  }
+
   @Mutation(() => Command)
   @UseGuards(GqlAuthGuard)
   enableCommand(
