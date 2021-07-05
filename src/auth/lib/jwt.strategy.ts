@@ -18,7 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const discordId = payload.sub;
     const redis = this.redis.getClient('server');
     const user = await redis.get(forUser(discordId));
-    console.log(user);
-    return JSON.parse(user);
+    return JSON.parse(user); // will be null if user is not found in redis
   }
 }

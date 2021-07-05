@@ -25,7 +25,7 @@ export class AuthService {
       forUser(details.discordId),
       JSON.stringify(details),
       'px',
-      60000,
+      3600000,
     );
     return details;
   }

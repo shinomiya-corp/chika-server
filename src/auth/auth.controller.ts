@@ -16,8 +16,13 @@ export class AuthController {
   @Get('redirect')
   @UseGuards(DiscordAuthGuard)
   redirect(@Req() req: Request, @Res() res: Response) {
-    console.table(req.user);
-    this.authService.login(req.user);
-    res.redirect('http://localhost:3000');
+    const { access_token } = this.authService.login(req.user);
+    console.log({ access_token });
+    return res
+      .cookie('access_token', `Bearer ${access_token}`, {
+        maxAge: 60000,
+        httpOnly: true,
+      })
+      .redirect('http://localhost:3000');
   }
 }
