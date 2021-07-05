@@ -1,10 +1,10 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class ToggleCommandInput {
   @Field(() => String)
   guildId!: string;
 
-  @Field(() => ID)
+  @Field(() => Int)
   commandId!: number;
 }

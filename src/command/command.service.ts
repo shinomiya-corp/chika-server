@@ -10,19 +10,27 @@ export class CommandService {
     return this.prisma.command.findMany({ include: { args: true } });
   }
 
-  enable(toggleCommandInput: ToggleCommandInput) {
+  async enable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandId } = toggleCommandInput;
-    return this.prisma.guild.update({
-      where: { guildId },
-      data: { disabledCommands: { connect: { id: commandId } } },
+    return this.prisma.command.update({
+      where: { id: commandId },
+      data: {
+        disabledGuilds: {
+          disconnect: { guildId },
+        },
+      },
     });
   }
 
-  disable(toggleCommandInput: ToggleCommandInput) {
+  async disable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandId } = toggleCommandInput;
-    return this.prisma.guild.update({
-      where: { guildId },
-      data: { disabledCommands: { disconnect: { id: commandId } } },
+    return this.prisma.command.update({
+      where: { id: commandId },
+      data: {
+        disabledGuilds: {
+          connect: { guildId },
+        },
+      },
     });
   }
 }

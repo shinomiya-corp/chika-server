@@ -15,7 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log('validate ran');
     const discordId = payload.sub;
     const redis = this.redis.getClient('server');
     const user = await redis.get(forUser(discordId));
