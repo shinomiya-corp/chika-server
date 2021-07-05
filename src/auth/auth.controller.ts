@@ -19,8 +19,8 @@ export class AuthController {
     const { access_token } = this.authService.login(req.user);
     console.log({ access_token });
     return res
-      .cookie('access_token', `Bearer ${access_token}`, {
-        maxAge: 60000,
+      .cookie('access_token', access_token, {
+        maxAge: 3600000,
         httpOnly: true,
       })
       .redirect('http://localhost:3000');

@@ -5,6 +5,7 @@ import { CommandModule } from './command/command.module';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from 'nestjs-redis';
 import { PassportModule } from '@nestjs/passport';
+import { DiscordModule } from './discord/discord.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PassportModule } from '@nestjs/passport';
       { name: 'server', url: process.env.SERVER_REDIS_URL },
     ]),
     PassportModule.register({ session: false }),
+    DiscordModule,
   ],
 })
 export class AppModule {}
