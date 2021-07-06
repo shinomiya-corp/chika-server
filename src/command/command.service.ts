@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import type { ToggleCommandInput } from './dto/toggleCommandInput.dto';
+import type { CommandGuildCtx } from './entities/command.entity';
 
 @Injectable()
 export class CommandService {
@@ -10,12 +11,22 @@ export class CommandService {
     return this.prisma.command.findMany({ include: { args: true } });
   }
 
-  async findDisabled(guildId: string) {
-    const res = await this.prisma.guild.findUnique({
+  async getCommandsUnderGuildCtx(guildId: string) {
+    const allCommands = await this.prisma.command.findMany();
+    const { disabledCommands } = await this.prisma.guild.findUnique({
       where: { guildId },
-      select: { disabledCommands: { include: { args: true } } },
+      select: { disabledCommands: true },
     });
-    return res.disabledCommands;
+
+    const commands = allCommands.reduce((acc, raw, i) => {
+      const _i = disabledCommands.findIndex(
+        (disabled) => disabled.id === raw.id,
+      );
+      acc[i] =
+        _i === -1 ? { ...raw, disabled: false } : { ...raw, disabled: true };
+      return acc;
+    }, allCommands as CommandGuildCtx[]);
+    return commands;
   }
 
   async enable(toggleCommandInput: ToggleCommandInput) {

@@ -26,6 +26,16 @@ enum CommandCategory {
   UTILITY
 }
 
+type CommandGuildCtx {
+  aliases: [String!]
+  args: [Argument!]
+  category: CommandCategory!
+  description: String!
+  disabled: Boolean!
+  id: ID!
+  name: String!
+}
+
 type Mutation {
   disableCommand(toggleCommandInput: ToggleCommandInput!): Command!
   enableCommand(toggleCommandInput: ToggleCommandInput!): Command!
@@ -33,7 +43,7 @@ type Mutation {
 
 type Query {
   getAllCommands: [Command!]!
-  getDisabledCommands(guildId: String!): [Command!]!
+  getCommandsUnderGuildCtx(guildId: String!): [CommandGuildCtx!]!
 }
 
 input ToggleCommandInput {

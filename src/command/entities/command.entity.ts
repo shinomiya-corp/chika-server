@@ -24,3 +24,9 @@ export class Command {
   @Field(() => [Argument], { nullable: true })
   args?: Argument[];
 }
+
+@ObjectType()
+export class CommandGuildCtx extends Command {
+  @Field(() => Boolean)
+  disabled: boolean;
+}
