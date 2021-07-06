@@ -1,7 +1,7 @@
 import { SimpleGuild } from '../../discord/lib/types';
 
 type DiscordUserInfo = {
-  discordId: string;
+  id: string;
   discriminator: string;
   username: string;
   avatar: string;

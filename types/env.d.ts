@@ -12,5 +12,6 @@ declare namespace NodeJS {
     DISCORD_CALLBACK_URL: string;
 
     JWT_SECRET: string;
+    WEB_CLIENT_URL: string;
   }
 }

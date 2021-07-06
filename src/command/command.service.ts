@@ -32,7 +32,7 @@ export class CommandService {
   async enable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandId } = toggleCommandInput;
     return this.prisma.command.update({
-      where: { id: commandId },
+      where: { id: parseInt(commandId) },
       data: {
         disabledGuilds: {
           disconnect: { guildId },
@@ -44,7 +44,7 @@ export class CommandService {
   async disable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandId } = toggleCommandInput;
     return this.prisma.command.update({
-      where: { id: commandId },
+      where: { id: parseInt(commandId) },
       data: {
         disabledGuilds: {
           connect: { guildId },

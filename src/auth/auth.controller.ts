@@ -17,7 +17,6 @@ export class AuthController {
   @UseGuards(DiscordAuthGuard)
   redirect(@Req() req: Request, @Res() res: Response) {
     const { access_token } = this.authService.login(req.user);
-    console.log({ access_token });
     return res
       .cookie('jwt', access_token, {
         maxAge: 3600000,

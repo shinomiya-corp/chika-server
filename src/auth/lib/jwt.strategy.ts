@@ -17,9 +17,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const discordId = payload.sub;
+    const id = payload.sub;
     const redis = this.redis.getClient('server');
-    const user = await redis.get(forUser(discordId));
+    const user = await redis.get(forUser(id));
     // returns null if user is not found
     // otherwise it should be a UserInfo object
     return JSON.parse(user);

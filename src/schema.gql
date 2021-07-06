@@ -36,17 +36,31 @@ type CommandGuildCtx {
   name: String!
 }
 
+type Guild {
+  icon: String!
+  id: ID!
+  name: String!
+}
+
 type Mutation {
-  disableCommand(toggleCommandInput: ToggleCommandInput!): Command!
-  enableCommand(toggleCommandInput: ToggleCommandInput!): Command!
+  disableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
+  enableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
 }
 
 type Query {
   getAllCommands: [Command!]!
   getCommandsUnderGuildCtx(guildId: String!): [CommandGuildCtx!]!
+  getUser: User!
 }
 
 input ToggleCommandInput {
-  commandId: Int!
+  commandId: ID!
   guildId: String!
+}
+
+type User {
+  avatar: String!
+  guilds: [Guild!]!
+  id: ID!
+  username: String!
 }

@@ -26,25 +26,27 @@ export class CommandResolver {
     return this.commandService.getCommandsUnderGuildCtx(guildId);
   }
 
-  @Mutation(() => Command)
+  @Mutation(() => CommandGuildCtx)
   @UseGuards(GqlAuthGuard)
-  enableCommand(
+  async enableCommand(
     @Args('toggleCommandInput', { type: () => ToggleCommandInput })
     toggleCommandInput: ToggleCommandInput,
     @CurrentUser() user: UserInfo,
-  ) {
+  ): Promise<CommandGuildCtx> {
     checkAdmin(user, toggleCommandInput.guildId);
-    return this.commandService.enable(toggleCommandInput);
+    const command = await this.commandService.enable(toggleCommandInput);
+    return { ...command, disabled: false };
   }
 
-  @Mutation(() => Command)
+  @Mutation(() => CommandGuildCtx)
   @UseGuards(GqlAuthGuard)
-  disableCommand(
+  async disableCommand(
     @Args('toggleCommandInput', { type: () => ToggleCommandInput })
     toggleCommandInput: ToggleCommandInput,
     @CurrentUser() user: UserInfo,
-  ) {
+  ): Promise<CommandGuildCtx> {
     checkAdmin(user, toggleCommandInput.guildId);
-    return this.commandService.disable(toggleCommandInput);
+    const command = await this.commandService.disable(toggleCommandInput);
+    return { ...command, disabled: true };
   }
 }
