@@ -46,26 +46,44 @@ type Guild {
   name: String!
 }
 
+type GuildConfig {
+  ballMaxVol: Int!
+  ballMinVol: Int!
+  id: ID!
+  prefix: String!
+  shiriHandSize: Int!
+  shiriMinLen: Int!
+}
+
 type Mutation {
   disableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
   enableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
 
   """Checks our database for this guild."""
-  hasChika(guildId: String!): Boolean!
+  hasChika(guildId: ID!): Boolean! @deprecated(reason: "We are syncing with the bot now, no need for this check")
 
   """Returns true if logout was successful."""
   logout: Boolean!
+
+  """The new prefix"""
+  updatePrefix(input: UpdatePrefixInput!): String!
 }
 
 type Query {
   getAllCommands: [Command!]!
   getCommandsUnderGuildCtx(guildId: String!): [CommandGuildCtx!]!
+  getGuildConfig(guildId: ID!): GuildConfig!
   getUser: User!
 }
 
 input ToggleCommandInput {
   commandId: Int!
   guildId: String!
+}
+
+input UpdatePrefixInput {
+  guildId: ID!
+  prefix: String!
 }
 
 type User {

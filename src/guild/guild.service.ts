@@ -2,6 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { RedisService } from 'nestjs-redis';
 import { PrismaService } from '../database/prisma.service';
 import { SimpleGuild } from '../discord/lib/types';
+import { GuildConfig } from './entities/guild.entity';
+import {
+  DEFAULT_MAX_BALLOON,
+  DEFAULT_MIN_BALLOON,
+  DEFAULT_PREFIX,
+  DEFAULT_SHIRITORI_HAND,
+  DEFAULT_SHIRITORI_MIN_LEN,
+} from './lib/defaults';
 
 @Injectable()
 export class GuildService {
@@ -33,5 +41,33 @@ export class GuildService {
       ...guild,
       isChikaIn: current.includes(guild.id),
     }));
+  }
+
+  async getConfig(guildId: string): Promise<GuildConfig> {
+    const guild = await this.prisma.guild.findUnique({
+      where: { guildId },
+      select: {
+        prefix: true,
+        shiritori: { select: { handSize: true, minLen: true } },
+        balloon: { select: { minVol: true, maxVol: true } },
+      },
+    });
+    if (!guild) return null;
+    const { prefix, balloon, shiritori } = guild;
+    return {
+      id: guildId,
+      prefix: prefix || DEFAULT_PREFIX,
+      shiriHandSize: shiritori?.handSize || DEFAULT_SHIRITORI_HAND,
+      shiriMinLen: shiritori?.minLen || DEFAULT_SHIRITORI_MIN_LEN,
+      ballMinVol: balloon?.minVol || DEFAULT_MIN_BALLOON,
+      ballMaxVol: balloon?.maxVol || DEFAULT_MAX_BALLOON,
+    };
+  }
+
+  async updatePrefix(guildId: string, prefix: string) {
+    return this.prisma.guild.update({
+      where: { guildId },
+      data: { prefix },
+    });
   }
 }
