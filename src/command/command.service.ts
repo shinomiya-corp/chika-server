@@ -13,10 +13,13 @@ export class CommandService {
 
   async getCommandsUnderGuildCtx(guildId: string) {
     const allCommands = await this.prisma.command.findMany();
-    const { disabledCommands } = await this.prisma.guild.findUnique({
+    const guild = await this.prisma.guild.findUnique({
       where: { guildId },
       select: { disabledCommands: true },
     });
+    // guild here can be null but prisma doesn't type it
+    if (!guild) await this.prisma.guild.create({ data: { guildId } });
+    const disabledCommands = guild ? guild.disabledCommands : [];
     const commands = allCommands.reduce<CommandGuildCtx[]>((acc, raw, i) => {
       const _i = disabledCommands.findIndex(
         (disabled) => disabled.id === raw.id,
