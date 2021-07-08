@@ -23,4 +23,10 @@ export class UserService {
       guilds: await this.guildService.validateGuilds(guilds),
     };
   }
+
+  async logout(user: UserInfo): Promise<boolean> {
+    const client = this.redis.getClient('server');
+    const num = await client.del(forUser(user.id));
+    return !!num;
+  }
 }

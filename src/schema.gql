@@ -52,6 +52,9 @@ type Mutation {
 
   """Checks our database for this guild."""
   hasChika(guildId: String!): Boolean!
+
+  """Returns true if logout was successful."""
+  logout: Boolean!
 }
 
 type Query {

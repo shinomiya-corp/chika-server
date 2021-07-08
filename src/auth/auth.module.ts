@@ -12,7 +12,7 @@ import { JwtStrategy } from './lib/jwt.strategy';
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '1d' },
     }),
     DiscordModule,
   ],
