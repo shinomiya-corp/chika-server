@@ -8,6 +8,6 @@ type Guild = {
   permissions_new: string;
 };
 
-type SimpleGuild = Pick<Guild, 'id' | 'name' | 'icon'>;
+type SimpleGuild = Pick<Guild, 'id' | 'name' | 'icon'> & { isChikaIn: boolean };
 
 export type { Guild, SimpleGuild };

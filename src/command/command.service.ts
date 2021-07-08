@@ -17,22 +17,24 @@ export class CommandService {
       where: { guildId },
       select: { disabledCommands: true },
     });
-
-    const commands = allCommands.reduce((acc, raw, i) => {
+    const commands = allCommands.reduce<CommandGuildCtx[]>((acc, raw, i) => {
       const _i = disabledCommands.findIndex(
         (disabled) => disabled.id === raw.id,
       );
+      const id = `${guildId}:${raw.id}`;
       acc[i] =
-        _i === -1 ? { ...raw, disabled: false } : { ...raw, disabled: true };
+        _i === -1
+          ? { ...raw, disabled: false, id, commandId: raw.id }
+          : { ...raw, disabled: true, id, commandId: raw.id };
       return acc;
-    }, allCommands as CommandGuildCtx[]);
+    }, allCommands as any);
     return commands;
   }
 
   async enable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandId } = toggleCommandInput;
     return this.prisma.command.update({
-      where: { id: parseInt(commandId) },
+      where: { id: commandId },
       data: {
         disabledGuilds: {
           disconnect: { guildId },
@@ -44,7 +46,7 @@ export class CommandService {
   async disable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandId } = toggleCommandInput;
     return this.prisma.command.update({
-      where: { id: parseInt(commandId) },
+      where: { id: commandId },
       data: {
         disabledGuilds: {
           connect: { guildId },

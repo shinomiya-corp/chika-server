@@ -7,6 +7,7 @@ import { RedisModule } from 'nestjs-redis';
 import { PassportModule } from '@nestjs/passport';
 import { DiscordModule } from './discord/discord.module';
 import { UserModule } from './user/user.module';
+import { GuildModule } from './guild/guild.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UserModule } from './user/user.module';
     ]),
     PassportModule.register({ session: false }),
     DiscordModule,
+    GuildModule,
   ],
 })
 export class AppModule {}

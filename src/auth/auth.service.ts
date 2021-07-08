@@ -23,7 +23,7 @@ export class AuthService {
       forUser(details.id),
       JSON.stringify({ ...details, guilds }),
       'px',
-      3600000,
+      3600000 * 24,
     );
     return { ...details, guilds };
   }

@@ -18,8 +18,8 @@ export class AuthController {
   redirect(@Req() req: Request, @Res() res: Response) {
     const { access_token } = this.authService.login(req.user);
     return res
-      .cookie('jwt', access_token, {
-        maxAge: 3600000,
+      .cookie('access_token', access_token, {
+        maxAge: 3600000 * 24,
         httpOnly: true,
       })
       .redirect('http://localhost:3000');

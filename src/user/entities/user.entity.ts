@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import type { UserInfo } from '../../auth/lib/types';
 import type { SimpleGuild } from '../../discord/lib/types';
+import { Guild } from '../../guild/entities/guild.entity';
 
 type SimpleUser = Pick<UserInfo, 'id' | 'username' | 'avatar' | 'guilds'>;
 
@@ -17,16 +18,4 @@ export class User implements SimpleUser {
 
   @Field(() => [Guild])
   guilds!: SimpleGuild[];
-}
-
-@ObjectType()
-export class Guild implements SimpleGuild {
-  @Field(() => ID)
-  id!: string;
-
-  @Field(() => String)
-  name!: string;
-
-  @Field(() => String)
-  icon!: string;
 }

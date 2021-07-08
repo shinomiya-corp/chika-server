@@ -30,8 +30,11 @@ type CommandGuildCtx {
   aliases: [String!]
   args: [Argument!]
   category: CommandCategory!
+  commandId: Int!
   description: String!
   disabled: Boolean!
+
+  """This is a prefixed ID of the format {guildID}:{commandID}"""
   id: ID!
   name: String!
 }
@@ -39,12 +42,16 @@ type CommandGuildCtx {
 type Guild {
   icon: String!
   id: ID!
+  isChikaIn: Boolean!
   name: String!
 }
 
 type Mutation {
   disableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
   enableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
+
+  """Checks our database for this guild."""
+  hasChika(guildId: String!): Boolean!
 }
 
 type Query {
@@ -54,7 +61,7 @@ type Query {
 }
 
 input ToggleCommandInput {
-  commandId: ID!
+  commandId: Int!
   guildId: String!
 }
 

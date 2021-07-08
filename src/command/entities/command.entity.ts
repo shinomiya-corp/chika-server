@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CmdCategory } from '@prisma/client';
 import { Argument } from './argument.entity';
 
@@ -7,7 +7,7 @@ registerEnumType(CmdCategory, { name: 'CommandCategory' });
 @ObjectType()
 export class Command {
   @Field(() => ID)
-  id!: number;
+  id!: number | string;
 
   @Field()
   name!: string;
@@ -27,6 +27,14 @@ export class Command {
 
 @ObjectType()
 export class CommandGuildCtx extends Command {
+  @Field(() => ID, {
+    description: 'This is a prefixed ID of the format {guildID}:{commandID}',
+  })
+  id: string;
+
+  @Field(() => Int)
+  commandId: number;
+
   @Field(() => Boolean)
   disabled: boolean;
 }

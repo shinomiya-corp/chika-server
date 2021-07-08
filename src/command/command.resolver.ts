@@ -33,9 +33,15 @@ export class CommandResolver {
     toggleCommandInput: ToggleCommandInput,
     @CurrentUser() user: UserInfo,
   ): Promise<CommandGuildCtx> {
-    checkAdmin(user, toggleCommandInput.guildId);
+    const { guildId, commandId } = toggleCommandInput;
+    checkAdmin(user, guildId);
     const command = await this.commandService.enable(toggleCommandInput);
-    return { ...command, disabled: false };
+    return {
+      ...command,
+      disabled: false,
+      id: `${guildId}:${commandId}`,
+      commandId: command.id,
+    };
   }
 
   @Mutation(() => CommandGuildCtx)
@@ -45,8 +51,14 @@ export class CommandResolver {
     toggleCommandInput: ToggleCommandInput,
     @CurrentUser() user: UserInfo,
   ): Promise<CommandGuildCtx> {
-    checkAdmin(user, toggleCommandInput.guildId);
+    const { guildId, commandId } = toggleCommandInput;
+    checkAdmin(user, guildId);
     const command = await this.commandService.disable(toggleCommandInput);
-    return { ...command, disabled: true };
+    return {
+      ...command,
+      disabled: true,
+      id: `${guildId}:${commandId}`,
+      commandId: command.id,
+    };
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { RedisService } from 'nestjs-redis';
 import { Strategy } from 'passport-jwt';
@@ -9,7 +9,6 @@ import { cookieExtractor } from './cookies';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly redis: RedisService) {
     super({
-      // TODO: change this to using cookie parsing
       jwtFromRequest: cookieExtractor,
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
@@ -17,10 +16,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    console.log('validate in jwt ran');
     const id = payload.sub;
     const redis = this.redis.getClient('server');
-    const user = await redis.get(forUser(id));
     // returns null if user is not found
+    // we'll throw here
+    const user = await redis.get(forUser(id));
+    if (!user) throw new UnauthorizedException();
     // otherwise it should be a UserInfo object
     return JSON.parse(user);
   }
