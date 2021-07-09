@@ -1,3 +1,7 @@
 import type { KeyType } from 'ioredis';
 
-export const forUser = (key: KeyType) => `user:${key}`;
+// server side
+export const forUser = (userId: KeyType) => `user:${userId}`;
+
+// bot side
+export const forTracks = (guildId: KeyType) => `queue:${guildId}`;

@@ -8,6 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { DiscordModule } from './discord/discord.module';
 import { UserModule } from './user/user.module';
 import { GuildModule } from './guild/guild.module';
+import { MusicModule } from './music/music.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { GuildModule } from './guild/guild.module';
     PassportModule.register({ session: false }),
     DiscordModule,
     GuildModule,
+    MusicModule,
   ],
 })
 export class AppModule {}

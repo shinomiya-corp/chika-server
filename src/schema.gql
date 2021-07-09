@@ -73,12 +73,21 @@ type Query {
   getAllCommands: [Command!]!
   getCommandsUnderGuildCtx(guildId: String!): [CommandGuildCtx!]!
   getGuildConfig(guildId: ID!): GuildConfig!
+  getTracks(guildId: ID!): [Track!]!
   getUser: User!
 }
 
 input ToggleCommandInput {
   commandId: Int!
   guildId: String!
+}
+
+type Track {
+  duration: String!
+  id: ID!
+  thumbnailURL: String!
+  title: String!
+  url: String!
 }
 
 input UpdateBalloonInput {
