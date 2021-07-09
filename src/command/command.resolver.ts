@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { checkAdmin, CurrentUser } from '../auth/lib/current-user';
+import { throwIfNotAdmin, CurrentUser } from '../auth/lib/current-user';
 import { GqlAuthGuard } from '../auth/lib/guards';
 import type { UserInfo } from '../auth/lib/types';
 import { CommandService } from './command.service';
@@ -22,7 +22,7 @@ export class CommandResolver {
     @Args('guildId', { type: () => String }) guildId: string,
     @CurrentUser() user: UserInfo,
   ) {
-    checkAdmin(user, guildId);
+    throwIfNotAdmin(user, guildId);
     return this.commandService.getCommandsUnderGuildCtx(guildId);
   }
 
@@ -34,7 +34,7 @@ export class CommandResolver {
     @CurrentUser() user: UserInfo,
   ): Promise<CommandGuildCtx> {
     const { guildId, commandId } = toggleCommandInput;
-    checkAdmin(user, guildId);
+    throwIfNotAdmin(user, guildId);
     const command = await this.commandService.enable(toggleCommandInput);
     return {
       ...command,
@@ -52,7 +52,7 @@ export class CommandResolver {
     @CurrentUser() user: UserInfo,
   ): Promise<CommandGuildCtx> {
     const { guildId, commandId } = toggleCommandInput;
-    checkAdmin(user, guildId);
+    throwIfNotAdmin(user, guildId);
     const command = await this.commandService.disable(toggleCommandInput);
     return {
       ...command,

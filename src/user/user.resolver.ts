@@ -7,11 +7,11 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Resolver()
+@UseGuards(GqlAuthGuard)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => User)
-  @UseGuards(GqlAuthGuard)
   getUser(@CurrentUser() user: UserInfo) {
     return this.userService.getUser(user);
   }
@@ -19,7 +19,6 @@ export class UserResolver {
   @Mutation(() => Boolean, {
     description: 'Returns true if logout was successful.',
   })
-  @UseGuards(GqlAuthGuard)
   logout(@CurrentUser() user: UserInfo) {
     return this.userService.logout(user);
   }

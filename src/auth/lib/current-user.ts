@@ -13,7 +13,7 @@ export const CurrentUser = createParamDecorator(
   },
 );
 
-export function checkAdmin(user: UserInfo, guildId: string) {
+export function throwIfNotAdmin(user: UserInfo, guildId: string) {
   // throw an error if not authorized
   if (!user.guilds.find(({ id }) => id === guildId)) {
     throw new UnauthorizedException(
