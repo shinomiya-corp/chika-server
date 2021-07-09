@@ -3,7 +3,7 @@ import { Field, ID, InputType } from '@nestjs/graphql';
 @InputType()
 export class UpdatePrefixInput {
   @Field(() => ID)
-  guildId: string;
+  id: string;
 
   @Field(() => String)
   prefix: string;

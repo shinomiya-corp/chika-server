@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { RedisService } from 'nestjs-redis';
 import { PrismaService } from '../database/prisma.service';
 import { SimpleGuild } from '../discord/lib/types';
+import {
+  UpdateBalloonInput,
+  UpdateShiritoriInput,
+} from './dto/update-param.dto';
 import { GuildConfig } from './entities/guild.entity';
 import {
   DEFAULT_MAX_BALLOON,
@@ -64,10 +68,45 @@ export class GuildService {
     };
   }
 
-  async updatePrefix(guildId: string, prefix: string) {
-    return this.prisma.guild.update({
+  async updatePrefix(guildId: string, prefix: string): Promise<GuildConfig> {
+    await this.prisma.guild.update({
       where: { guildId },
       data: { prefix },
     });
+    return this.getConfig(guildId);
+  }
+
+  async updateShiritori(input: UpdateShiritoriInput): Promise<GuildConfig> {
+    const { id: guildId, handSize, minLen } = input;
+    await this.prisma.guild.update({
+      where: { guildId },
+      data: {
+        shiritori: {
+          // NOTE: we are using upsert!
+          upsert: {
+            update: { handSize, minLen },
+            create: { handSize, minLen },
+          },
+        },
+      },
+    });
+    return this.getConfig(guildId);
+  }
+
+  async updateBalloon(input: UpdateBalloonInput): Promise<GuildConfig> {
+    const { id: guildId, minVol, maxVol } = input;
+    await this.prisma.guild.update({
+      where: { guildId },
+      data: {
+        balloon: {
+          // NOTE: we are using upsert!
+          upsert: {
+            update: { minVol, maxVol },
+            create: { minVol, maxVol },
+          },
+        },
+      },
+    });
+    return this.getConfig(guildId);
   }
 }

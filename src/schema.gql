@@ -64,9 +64,9 @@ type Mutation {
 
   """Returns true if logout was successful."""
   logout: Boolean!
-
-  """The new prefix"""
-  updatePrefix(input: UpdatePrefixInput!): String!
+  updateBalloon(input: UpdateBalloonInput!): GuildConfig!
+  updatePrefix(input: UpdatePrefixInput!): GuildConfig!
+  updateShiritori(input: UpdateShiritoriInput!): GuildConfig!
 }
 
 type Query {
@@ -81,9 +81,31 @@ input ToggleCommandInput {
   guildId: String!
 }
 
+input UpdateBalloonInput {
+  """Guild's ID in Discord."""
+  id: ID!
+
+  """Maximum volume."""
+  maxVol: Int
+
+  """Minimum volume."""
+  minVol: Int
+}
+
 input UpdatePrefixInput {
-  guildId: ID!
+  id: ID!
   prefix: String!
+}
+
+input UpdateShiritoriInput {
+  """Hand size."""
+  handSize: Int
+
+  """Guild's ID in Discord."""
+  id: ID!
+
+  """Minimum length."""
+  minLen: Int
 }
 
 type User {

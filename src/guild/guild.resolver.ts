@@ -1,4 +1,8 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  UpdateBalloonInput,
+  UpdateShiritoriInput,
+} from './dto/update-param.dto';
 import { UpdatePrefixInput } from './dto/update-prefix.dto';
 import { GuildConfig } from './entities/guild.entity';
 import { GuildService } from './guild.service';
@@ -21,12 +25,27 @@ export class GuildResolver {
     return this.guildService.getConfig(guildId);
   }
 
-  @Mutation(() => String, { description: 'The new prefix' })
-  async updatePrefix(
+  @Mutation(() => GuildConfig)
+  updatePrefix(
     @Args('input', { type: () => UpdatePrefixInput })
-    { guildId, prefix }: UpdatePrefixInput,
+    { id, prefix }: UpdatePrefixInput,
   ) {
-    const res = await this.guildService.updatePrefix(guildId, prefix);
-    return res.prefix;
+    return this.guildService.updatePrefix(id, prefix);
+  }
+
+  @Mutation(() => GuildConfig)
+  updateShiritori(
+    @Args('input', { type: () => UpdateShiritoriInput })
+    input: UpdateShiritoriInput,
+  ) {
+    return this.guildService.updateShiritori(input);
+  }
+
+  @Mutation(() => GuildConfig)
+  updateBalloon(
+    @Args('input', { type: () => UpdateBalloonInput })
+    input: UpdateBalloonInput,
+  ) {
+    return this.guildService.updateBalloon(input);
   }
 }
