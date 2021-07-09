@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddTrackInput {
+  guildId: ID!
+  youtubeUrl: String!
+}
+
 type Argument {
   command: Command!
   id: ID!
@@ -56,6 +61,7 @@ type GuildConfig {
 }
 
 type Mutation {
+  addTrack(input: AddTrackInput!): Track!
   disableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
   enableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
 
