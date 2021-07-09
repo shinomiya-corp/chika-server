@@ -39,4 +39,22 @@ export class MusicResolver {
     throwIfNotAdmin(user, input.guildId);
     return this.musicService.removeTrack(input);
   }
+
+  @Mutation(() => [Track])
+  shuffleTracks(
+    @Args('guildId', { type: () => ID }) guildId: string,
+    @CurrentUser() user: UserInfo,
+  ) {
+    throwIfNotAdmin(user, guildId);
+    return this.musicService.shuffle(guildId);
+  }
+
+  @Query(() => Track, { nullable: true })
+  getNowPlaying(
+    @Args('guildId', { type: () => ID }) guildId: string,
+    @CurrentUser() user: UserInfo,
+  ) {
+    throwIfNotAdmin(user, guildId);
+    return this.musicService.getNowPlaying(guildId);
+  }
 }
