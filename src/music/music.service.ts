@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import ytdl from 'ytdl-core';
 import { forTracks } from '../database/lib/redis-prefixes';
 import type { AddTrackInput } from './dto/addTrack.dto';
+import { RemoveTrackInput } from './dto/removeTrack.dto';
 import type { Track } from './entities/track.entity';
 import { secToString } from './lib/youtube';
 
@@ -42,5 +43,10 @@ export class MusicService {
     };
     await this.redis.rpush(forTracks(guildId), JSON.stringify(track));
     return track;
+  }
+
+  async removeTrack(input: RemoveTrackInput): Promise<number> {
+    const { track, guildId } = input;
+    return this.redis.lrem(forTracks(guildId), 1, JSON.stringify(track));
   }
 }

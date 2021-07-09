@@ -1,7 +1,8 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthGuard } from '../auth/lib/guards';
 import { AddTrackInput } from './dto/addTrack.dto';
+import { RemoveTrackInput } from './dto/removeTrack.dto';
 import { Track } from './entities/track.entity';
 import { MusicService } from './music.service';
 
@@ -21,5 +22,13 @@ export class MusicResolver {
     @Args('input', { type: () => AddTrackInput }) input: AddTrackInput,
   ): Promise<Track> {
     return this.musicService.addTrack(input);
+  }
+
+  @Mutation(() => Int, { description: 'Returns the number of tracks removed.' })
+  @UseGuards(GqlAuthGuard)
+  removeTrack(
+    @Args('input', { type: () => RemoveTrackInput }) input: RemoveTrackInput,
+  ): Promise<number> {
+    return this.musicService.removeTrack(input);
   }
 }

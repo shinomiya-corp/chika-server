@@ -70,6 +70,9 @@ type Mutation {
 
   """Returns true if logout was successful."""
   logout: Boolean!
+
+  """Returns the number of tracks removed."""
+  removeTrack(input: RemoveTrackInput!): Int!
   updateBalloon(input: UpdateBalloonInput!): GuildConfig!
   updatePrefix(input: UpdatePrefixInput!): GuildConfig!
   updateShiritori(input: UpdateShiritoriInput!): GuildConfig!
@@ -83,12 +86,25 @@ type Query {
   getUser: User!
 }
 
+input RemoveTrackInput {
+  guildId: ID!
+  track: TrackInput!
+}
+
 input ToggleCommandInput {
   commandId: Int!
   guildId: String!
 }
 
 type Track {
+  duration: String!
+  id: ID!
+  thumbnailURL: String!
+  title: String!
+  url: String!
+}
+
+input TrackInput {
   duration: String!
   id: ID!
   thumbnailURL: String!
