@@ -21,6 +21,7 @@ export class AuthController {
       .cookie('access_token', access_token, {
         maxAge: 3600000 * 24,
         httpOnly: true,
+        domain: 'chikawara.xyz',
       })
       .redirect(process.env.WEB_CLIENT_URL);
   }
