@@ -20,7 +20,7 @@ import { MusicModule } from './music/music.module';
       sortSchema: true,
       debug: true,
       cors: {
-        origin: process.env.WEB_CLIENT_URL,
+        origin: true,
         credentials: true,
       },
     }),

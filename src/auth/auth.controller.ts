@@ -22,6 +22,6 @@ export class AuthController {
         maxAge: 3600000 * 24,
         httpOnly: true,
       })
-      .redirect('http://localhost:3000');
+      .redirect(process.env.WEB_CLIENT_URL);
   }
 }
