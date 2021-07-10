@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { RedisService } from 'nestjs-redis';
 import { PrismaService } from '../database/prisma.service';
 import type { ToggleCommandInput } from './dto/toggleCommandInput.dto';
 import type { CommandGuildCtx } from './entities/command.entity';
 
 @Injectable()
 export class CommandService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
+
+  redis = this.redisService.getClient('bot');
 
   findAll() {
     return this.prisma.command.findMany({ include: { args: true } });
