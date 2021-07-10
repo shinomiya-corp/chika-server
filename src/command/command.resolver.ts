@@ -1,6 +1,11 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { throwIfNotAdmin, CurrentUser } from '../auth/lib/current-user';
+import { GqlAuthGuard } from '../auth/lib/guards';
+import type { UserInfo } from '../auth/lib/types';
 import { CommandService } from './command.service';
-import { Command } from './entities/command.entity';
+import { ToggleCommandInput } from './dto/toggleCommandInput.dto';
+import { Command, CommandGuildCtx } from './entities/command.entity';
 
 @Resolver(() => Command)
 export class CommandResolver {
@@ -11,19 +16,49 @@ export class CommandResolver {
     return this.commandService.findAll();
   }
 
-  // @Mutation(() => Command)
-  // enableCommand(
-  //   @Args('toggleCommandInput', { type: () => ToggleCommandInput })
-  //   toggleCommandInput: ToggleCommandInput,
-  // ) {
-  //   this.commandService.enable(toggleCommandInput);
-  // }
+  @Query(() => [CommandGuildCtx])
+  @UseGuards(GqlAuthGuard)
+  getCommandsUnderGuildCtx(
+    @Args('guildId', { type: () => String }) guildId: string,
+    @CurrentUser() user: UserInfo,
+  ) {
+    throwIfNotAdmin(user, guildId);
+    return this.commandService.getCommandsUnderGuildCtx(guildId);
+  }
 
-  // @Mutation(() => Command)
-  // disableCommand(
-  //   @Args('toggleCommandInput', { type: () => ToggleCommandInput })
-  //   toggleCommandInput: ToggleCommandInput,
-  // ) {
-  //   this.commandService.disable(toggleCommandInput);
-  // }
+  @Mutation(() => CommandGuildCtx)
+  @UseGuards(GqlAuthGuard)
+  async enableCommand(
+    @Args('toggleCommandInput', { type: () => ToggleCommandInput })
+    toggleCommandInput: ToggleCommandInput,
+    @CurrentUser() user: UserInfo,
+  ): Promise<CommandGuildCtx> {
+    const { guildId, commandId } = toggleCommandInput;
+    throwIfNotAdmin(user, guildId);
+    const command = await this.commandService.enable(toggleCommandInput);
+    return {
+      ...command,
+      disabled: false,
+      id: `${guildId}:${commandId}`,
+      commandId: command.id,
+    };
+  }
+
+  @Mutation(() => CommandGuildCtx)
+  @UseGuards(GqlAuthGuard)
+  async disableCommand(
+    @Args('toggleCommandInput', { type: () => ToggleCommandInput })
+    toggleCommandInput: ToggleCommandInput,
+    @CurrentUser() user: UserInfo,
+  ): Promise<CommandGuildCtx> {
+    const { guildId, commandId } = toggleCommandInput;
+    throwIfNotAdmin(user, guildId);
+    const command = await this.commandService.disable(toggleCommandInput);
+    return {
+      ...command,
+      disabled: true,
+      id: `${guildId}:${commandId}`,
+      commandId: command.id,
+    };
+  }
 }

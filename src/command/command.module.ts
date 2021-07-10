@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CommandService } from './command.service';
-import { CommandResolver } from './command.resolver';
 import { PrismaService } from '../database/prisma.service';
+import { CommandResolver } from './command.resolver';
+import { CommandService } from './command.service';
 
 @Module({
   providers: [CommandResolver, CommandService, PrismaService],

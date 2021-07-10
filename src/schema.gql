@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddTrackInput {
+  guildId: ID!
+  youtubeUrl: String!
+}
+
 type Argument {
   command: Command!
   id: ID!
@@ -26,6 +31,111 @@ enum CommandCategory {
   UTILITY
 }
 
+type CommandGuildCtx {
+  aliases: [String!]
+  args: [Argument!]
+  category: CommandCategory!
+  commandId: Int!
+  description: String!
+  disabled: Boolean!
+
+  """This is a prefixed ID of the format {guildID}:{commandID}"""
+  id: ID!
+  name: String!
+}
+
+type Guild {
+  icon: String!
+  id: ID!
+  isChikaIn: Boolean!
+  name: String!
+}
+
+type GuildConfig {
+  ballMaxVol: Int!
+  ballMinVol: Int!
+  id: ID!
+  prefix: String!
+  shiriHandSize: Int!
+  shiriMinLen: Int!
+}
+
+type Mutation {
+  addTrack(input: AddTrackInput!): Track!
+  disableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
+  enableCommand(toggleCommandInput: ToggleCommandInput!): CommandGuildCtx!
+
+  """Checks our database for this guild."""
+  hasChika(guildId: ID!): Boolean! @deprecated(reason: "We are syncing with the bot now, no need for this check")
+
+  """Returns true if logout was successful."""
+  logout: Boolean!
+
+  """Returns the number of tracks removed."""
+  removeTrack(input: RemoveTrackInput!): Int!
+  shuffleTracks(guildId: ID!): [Track!]!
+  updateBalloon(input: UpdateBalloonInput!): GuildConfig!
+  updatePrefix(input: UpdatePrefixInput!): GuildConfig!
+  updateShiritori(input: UpdateShiritoriInput!): GuildConfig!
+}
+
 type Query {
   getAllCommands: [Command!]!
+  getCommandsUnderGuildCtx(guildId: String!): [CommandGuildCtx!]!
+  getGuildConfig(guildId: ID!): GuildConfig!
+  getNowPlaying(guildId: ID!): Track
+  getTracks(guildId: ID!): [Track!]!
+  getUser: User!
+}
+
+input RemoveTrackInput {
+  guildId: ID!
+  trackId: String!
+}
+
+input ToggleCommandInput {
+  commandId: Int!
+  guildId: String!
+}
+
+type Track {
+  duration: String!
+  id: ID!
+  thumbnailURL: String!
+  title: String!
+  url: String!
+}
+
+input UpdateBalloonInput {
+  """Guild's ID in Discord."""
+  id: ID!
+
+  """Maximum volume."""
+  maxVol: Int
+
+  """Minimum volume."""
+  minVol: Int
+}
+
+input UpdatePrefixInput {
+  id: ID!
+  prefix: String!
+}
+
+input UpdateShiritoriInput {
+  """Hand size."""
+  handSize: Int
+
+  """Guild's ID in Discord."""
+  id: ID!
+
+  """Minimum length."""
+  minLen: Int
+}
+
+type User {
+  avatar: String!
+  guilds: [Guild!]!
+  id: ID!
+  username: String!
 }
