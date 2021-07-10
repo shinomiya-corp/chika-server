@@ -1,7 +1,6 @@
-import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-@InputType('TrackInput')
 export class Track {
   @Field(() => ID)
   id: string;

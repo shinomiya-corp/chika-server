@@ -90,7 +90,7 @@ type Query {
 
 input RemoveTrackInput {
   guildId: ID!
-  track: TrackInput!
+  trackId: String!
 }
 
 input ToggleCommandInput {
@@ -99,14 +99,6 @@ input ToggleCommandInput {
 }
 
 type Track {
-  duration: String!
-  id: ID!
-  thumbnailURL: String!
-  title: String!
-  url: String!
-}
-
-input TrackInput {
   duration: String!
   id: ID!
   thumbnailURL: String!

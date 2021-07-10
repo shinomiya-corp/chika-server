@@ -46,10 +46,18 @@ export class MusicService {
     return track;
   }
 
+  // TODO: switch to a sorted set coz this really sucks
   async removeTrack(input: RemoveTrackInput): Promise<number> {
-    const { track, guildId } = input;
-    // TODO: switch to a sorted set coz this really sucks
-    return this.redis.lrem(forTracks(guildId), 1, JSON.stringify(track));
+    const { trackId, guildId } = input;
+    const key = forTracks(guildId);
+    const _tracks = await this.redis.lrange(key, 0, -1);
+    const tracks = _tracks.filter((track) => !track.includes(trackId));
+    this.redis
+      .pipeline()
+      .del(key)
+      .lpush(key, ...tracks)
+      .exec();
+    return _tracks.length - tracks.length;
   }
 
   async shuffle(guildId: string): Promise<Track[]> {
