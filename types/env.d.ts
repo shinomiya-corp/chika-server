@@ -13,5 +13,6 @@ declare namespace NodeJS {
 
     JWT_SECRET: string;
     WEB_CLIENT_URL: string;
+    COOKIE_DOMAIN: string;
   }
 }

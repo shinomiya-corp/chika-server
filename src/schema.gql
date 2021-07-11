@@ -94,7 +94,8 @@ input RemoveTrackInput {
 }
 
 input ToggleCommandInput {
-  commandId: Int!
+  """Name of the command. It should be unique."""
+  commandName: String!
   guildId: String!
 }
 

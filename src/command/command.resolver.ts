@@ -33,13 +33,13 @@ export class CommandResolver {
     toggleCommandInput: ToggleCommandInput,
     @CurrentUser() user: UserInfo,
   ): Promise<CommandGuildCtx> {
-    const { guildId, commandId } = toggleCommandInput;
+    const { guildId } = toggleCommandInput;
     throwIfNotAdmin(user, guildId);
     const command = await this.commandService.enable(toggleCommandInput);
     return {
       ...command,
       disabled: false,
-      id: `${guildId}:${commandId}`,
+      id: `${guildId}:${command.id}`,
       commandId: command.id,
     };
   }
@@ -51,13 +51,13 @@ export class CommandResolver {
     toggleCommandInput: ToggleCommandInput,
     @CurrentUser() user: UserInfo,
   ): Promise<CommandGuildCtx> {
-    const { guildId, commandId } = toggleCommandInput;
+    const { guildId } = toggleCommandInput;
     throwIfNotAdmin(user, guildId);
     const command = await this.commandService.disable(toggleCommandInput);
     return {
       ...command,
       disabled: true,
-      id: `${guildId}:${commandId}`,
+      id: `${guildId}:${command.id}`,
       commandId: command.id,
     };
   }
