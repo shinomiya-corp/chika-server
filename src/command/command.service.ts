@@ -1,5 +1,7 @@
+import { Command } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { RedisService } from 'nestjs-redis';
+import { forBlockedCommands } from '../database/lib/redis-prefixes';
 import { PrismaService } from '../database/prisma.service';
 import type { ToggleCommandInput } from './dto/toggleCommandInput.dto';
 import type { CommandGuildCtx } from './entities/command.entity';
@@ -19,16 +21,12 @@ export class CommandService {
 
   async getCommandsUnderGuildCtx(guildId: string) {
     const allCommands = await this.prisma.command.findMany();
-    const guild = await this.prisma.guild.findUnique({
-      where: { guildId },
-      select: { disabledCommands: true },
-    });
-    // guild here can be null but prisma doesn't type it
-    if (!guild) await this.prisma.guild.create({ data: { guildId } });
-    const disabledCommands = guild ? guild.disabledCommands : [];
+    const disabledCommands = await this.redis.smembers(
+      forBlockedCommands(guildId),
+    );
     const commands = allCommands.reduce<CommandGuildCtx[]>((acc, raw, i) => {
       const _i = disabledCommands.findIndex(
-        (disabled) => disabled.id === raw.id,
+        (disabled) => disabled === raw.name,
       );
       const id = `${guildId}:${raw.id}`;
       acc[i] =
@@ -42,25 +40,13 @@ export class CommandService {
 
   async enable(toggleCommandInput: ToggleCommandInput) {
     const { guildId, commandName } = toggleCommandInput;
-    return this.prisma.command.update({
-      where: { name: commandName },
-      data: {
-        disabledGuilds: {
-          disconnect: { guildId },
-        },
-      },
-    });
+    this.redis.srem(forBlockedCommands(guildId), commandName);
+    return this.prisma.command.findUnique({ where: { name: commandName } });
   }
 
-  async disable(toggleCommandInput: ToggleCommandInput) {
+  async disable(toggleCommandInput: ToggleCommandInput): Promise<Command> {
     const { guildId, commandName } = toggleCommandInput;
-    return this.prisma.command.update({
-      where: { name: commandName },
-      data: {
-        disabledGuilds: {
-          connect: { guildId },
-        },
-      },
-    });
+    await this.redis.sadd(forBlockedCommands(guildId), commandName);
+    return this.prisma.command.findUnique({ where: { name: commandName } });
   }
 }
