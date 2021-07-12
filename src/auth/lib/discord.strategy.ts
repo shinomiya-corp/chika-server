@@ -14,13 +14,20 @@ export class DiscordStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(accessToken: string, refreshToken: string, profile: Profile) {
+  validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    ...args: any[]
+  ) {
     const { username, discriminator, avatar, id } = profile;
+    console.log({ profile });
+    console.log(args);
     return this.authService.validateUser({
       id,
       username,
       discriminator,
-      avatar,
+      avatar: avatar || '',
       accessToken,
       refreshToken,
     });
